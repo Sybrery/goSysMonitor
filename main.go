@@ -1,44 +1,54 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/shirou/gopsutil/v4/mem"
 )
 
-var variant int
-
 func main() {
-	for {
-		fmt.Println("------------------------")
-		fmt.Println("-----System Monitor-----")
-		fmt.Println("------------------------")
-		fmt.Println("1. Processes")
-		fmt.Println("2. Perfomance")
-		fmt.Println("3. Exit")
+	fmt.Println("Golang System Monitor [Version 0.1]")
+	fmt.Println("Author: Sybrery")
 
-		fmt.Printf("Your choice: ")
-		fmt.Scan(&variant)
+	reader := bufio.NewScanner(os.Stdin)
 
-		if variant == 1 {
+	for reader.Scan() {
+		input := strings.TrimSpace(reader.Text())
+
+		switch input {
+		case "gsm help":
+			fmt.Println("info")
+		case "gsm -p":
 			fmt.Println("all processes")
-		} else if variant == 2 {
+		case "gsm -m":
 			v, err := mem.VirtualMemory()
 			if err != nil {
-				log.Fatal(err)
+				fmt.Println("Error:", err)
+				continue
 			}
-
 			s, err := mem.SwapMemory()
 			if err != nil {
-				log.Fatal(err)
+				fmt.Println("Error:", err)
+				continue
 			}
 
-			fmt.Printf("Total: %v, Used:%v, UsedPercent:%f%%, Available:%v, Committed Used:%v, Committed Total:%v\n", v.Total, v.Used, v.UsedPercent, v.Available, s.Used, s.Total)
-		} else if variant == 3 {
-			break
-		} else {
-			fmt.Println("Your input data is invalid, try again")
+			totalMem := fmt.Sprintf("Total: %.1f GB", float64(v.Total)/(1<<30))
+			usedMem := fmt.Sprintf("In use: %.1f GB", float64(v.Used)/(1<<30))
+			usedPercentMem := fmt.Sprintf("(%.1f%%)", float64(v.UsedPercent))
+			availableMem := fmt.Sprintf("Available: %.1f GB", float64(v.Available)/(1<<30))
+			committedMem := fmt.Sprintf("Committed: %.1f GB", float64(s.Used)/(1<<30))
+			committedTotalMem := fmt.Sprintf("Committed Total: %.1f GB", float64(s.Total)/(1<<30))
+
+			fmt.Println(totalMem, usedMem, usedPercentMem, availableMem, committedMem, committedTotalMem)
+		default:
+			fmt.Println("invalid command")
 		}
+	}
+	if err := reader.Err(); err != nil {
+		log.Fatal(err)
 	}
 }
