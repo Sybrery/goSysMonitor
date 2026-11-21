@@ -19,15 +19,13 @@ func PrintMem() {
 	}
 
 	totalMem := fmt.Sprintf("Total: %.1f GiB", float64(v.Total)/(1<<30))
-	usedMem := fmt.Sprintf("In use: %.1f GiB", float64(v.Used)/(1<<30))
-	usedPercentMem := fmt.Sprintf("(%.1f%%)", float64(v.UsedPercent))
 	availableMem := fmt.Sprintf("Available: %.1f GiB", float64(v.Available)/(1<<30))
 	swapMem := fmt.Sprintf("Swap used: %.1f GiB", float64(s.Used)/(1<<30))
 	swapTotalMem := fmt.Sprintf("Swap capacity: %.1f GiB", float64(s.Total)/(1<<30))
 
-	fmt.Println(totalMem)
-	fmt.Println(usedMem, usedPercentMem)
-	fmt.Println(availableMem)
-	fmt.Println(swapMem)
-	fmt.Println(swapTotalMem)
+	usedMem := float64(v.Used) / (1 << 30)
+
+	fmt.Println(availableMem, "/", totalMem)
+	fmt.Printf("In use: %.1f GiB [%s] %.1f%%\n", usedMem, UsageBar(v.UsedPercent), v.UsedPercent)
+	fmt.Println(swapMem, "/", swapTotalMem)
 }

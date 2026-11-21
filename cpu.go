@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/shirou/gopsutil/v4/cpu"
@@ -56,11 +55,7 @@ func PrintCpu() {
 	fmt.Println(totalUsage)
 
 	for i, usage := range c2 {
-		filled := int(usage / 10)
-		unfilled := 10 - filled
-		bar := strings.Repeat("#", filled)
-		emptyPart := strings.Repeat(".", unfilled)
-		fmt.Printf("CPU %d: [%s%s] %.1f%%\n", i+1, bar, emptyPart, usage)
+		fmt.Printf("CPU %d: [%s] %.1f%%\n", i+1, UsageBar(usage), usage)
 	}
 
 }
