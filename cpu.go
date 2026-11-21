@@ -55,7 +55,12 @@ func PrintCpu() {
 	fmt.Println(totalUsage)
 
 	for i, usage := range c2 {
-		fmt.Printf("CPU %d: [%s] %.1f%%\n", i+1, UsageBar(usage), usage)
+		bar, err := UsageBar(usage)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		fmt.Printf("CPU %d: [%s] %.1f%%\n", i+1, bar, usage)
 	}
 
 }

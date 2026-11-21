@@ -38,6 +38,17 @@ func main() {
 		case "gsm -m":
 			PrintMem()
 			fmt.Printf(">> ")
+		case "gsm -g":
+			PrintGpu()
+			fmt.Printf(">> ")
+		case "gsm -d":
+			PrintDisk()
+			fmt.Printf(">> ")
+		case "gsm -p":
+			PrintProcesses()
+			fmt.Printf(">> ")
+		case "gsm exit":
+			return
 		default:
 			fmt.Println("invalid command")
 			fmt.Print(">> ")
