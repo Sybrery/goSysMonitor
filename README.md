@@ -5,7 +5,7 @@ A terminal-based system monitor written in Go. The goal is to bring CPU, RAM, GP
 ## Project status
 
 - [x] CPU details and usage bars for each logical processor
-- [x] RAM and swap usage
+- [x] RAM usage bar and swap usage
 - [ ] GPU 0 and GPU 1 monitoring
 - [ ] Disk monitoring
 - [ ] Running process list
@@ -24,13 +24,14 @@ Enter one of the following commands at the `>>` prompt. Press `Ctrl+C` to quit.
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `gsm help` | Available commands                                                                                                                               |
 | `gsm -c`   | CPU model, overall usage, usage per logical processor, physical cores, logical processor count, occupied sockets, and reported maximum frequency |
-| `gsm -m`   | Total, used, and available RAM, plus swap usage and capacity. Memory sizes are shown in GiB.                                                     |
+| `gsm -m`   | RAM usage bar, total and available RAM, and swap usage and capacity. Memory sizes are shown in GiB.                                                |
 
-## CPU usage bars
+## Usage bars
 
-Each bar shows the usage of one logical processor.
+`gsm -c` shows one bar per logical processor. `gsm -m` shows a bar for RAM usage.
 
 ```text
 CPU 1: [####......] 42.3%
 CPU 2: [#.........] 18.0%
+In use: 9.0 GiB [#####.....] 59.0%
 ```
