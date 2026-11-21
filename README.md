@@ -18,13 +18,14 @@ Use Go 1.27.4 or later, as specified in `go.mod`. From the project directory, ru
 go run .
 ```
 
-Enter one of the following commands at the `>>` prompt. Press `Ctrl+C` to quit.
+Enter one of the following commands at the `>>` prompt. `Ctrl+C` or `gsm exit` to quit.
 
 | Command    | What it shows                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `gsm help` | Available commands                                                                                                                               |
 | `gsm -c`   | CPU model, overall usage, usage per logical processor, physical cores, logical processor count, occupied sockets, and reported maximum frequency |
-| `gsm -m`   | RAM usage bar, total and available RAM, and swap usage and capacity. Memory sizes are shown in GiB.                                                |
+| `gsm -m`   | RAM usage bar, total and available RAM, and swap usage and capacity.                                                                             |
+| `gsm exit`   | Quit                                                                                                                                           |
 
 ## Usage bars
 
