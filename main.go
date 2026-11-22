@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"golangSystemMonitor/modules"
 )
 
 func PrintHelp() {
@@ -38,19 +40,19 @@ func main() {
 			PrintHelp()
 			fmt.Printf(">> ")
 		case "gsm -c":
-			PrintCpu()
+			modules.PrintCpu()
 			fmt.Printf(">> ")
 		case "gsm -m":
-			PrintMem()
+			modules.PrintMem()
 			fmt.Printf(">> ")
 		case "gsm -g":
-			PrintGpu()
+			modules.PrintGpu()
 			fmt.Printf(">> ")
 		case "gsm -d":
-			PrintDisk()
+			modules.PrintDisk()
 			fmt.Printf(">> ")
 		case "gsm -p":
-			PrintProcesses()
+			modules.PrintProcesses()
 			fmt.Printf(">> ")
 		case "gsm exit":
 			return
