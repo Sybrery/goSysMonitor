@@ -10,7 +10,7 @@ import (
 
 func PrintHelp() {
 	fmt.Println()
-	fmt.Println("Golang System Monitor is a tool for monitoring your PC's CPU, RAM, disk usage and etc.")
+	fmt.Println("Golang System Monitor is a tool for monitoring your PC's Processes, CPU, GPU, RAM and disk usage")
 	fmt.Println()
 	fmt.Println("The commands are:")
 	fmt.Println("                 gsm -c          show a cpu info")
@@ -25,7 +25,7 @@ func PrintHelp() {
 func main() {
 	fmt.Println("Golang System Monitor [Version 0.1]")
 	fmt.Println("Author: Sybrery")
-	fmt.Println("Use \"gsm help\" if you need a hint")
+	fmt.Println("Type \"gsm help\" to list commands.")
 	fmt.Printf(">> ")
 
 	reader := bufio.NewScanner(os.Stdin)
@@ -55,7 +55,7 @@ func main() {
 		case "gsm exit":
 			return
 		default:
-			fmt.Println("invalid command")
+			fmt.Println("Unknown command. Type \"gsm help\" to list commands.")
 			fmt.Print(">> ")
 		}
 	}

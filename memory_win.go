@@ -40,15 +40,17 @@ func PrintMem() {
 		return
 	}
 
-	physicalTotal := float64(info.physicalTotal*info.pageSize) / (1 << 30)
-	physicalAvailable := float64(info.physicalAvailable*info.pageSize) / (1 << 30)
+	pageSize := uint64(info.pageSize)
+	physicalTotalBytes := uint64(info.physicalTotal) * pageSize
+	physicalTotal := float64(physicalTotalBytes) / (1 << 30)
+	physicalAvailable := float64(uint64(info.physicalAvailable)*pageSize) / (1 << 30)
 	physicalUsed := physicalTotal - physicalAvailable
 	physicalUsedPercent := physicalUsed / physicalTotal * 100
-	commitTotal := float64(info.commitTotal*info.pageSize) / (1 << 30)
-	commitLimit := float64(info.commitLimit*info.pageSize) / (1 << 30)
-	systemCache := float64(info.systemCache*info.pageSize) / (1 << 30)
-	pagedPool := float64(info.kernelPaged*info.pageSize) / (1 << 20)
-	nonPagedPool := float64(info.kernelNonPaged*info.pageSize) / (1 << 20)
+	commitTotal := float64(uint64(info.commitTotal)*pageSize) / (1 << 30)
+	commitLimit := float64(uint64(info.commitLimit)*pageSize) / (1 << 30)
+	systemCache := float64(uint64(info.systemCache)*pageSize) / (1 << 30)
+	pagedPool := float64(uint64(info.kernelPaged)*pageSize) / (1 << 20)
+	nonPagedPool := float64(uint64(info.kernelNonPaged)*pageSize) / (1 << 20)
 
 	bar, err := UsageBar(physicalUsedPercent)
 	if err != nil {
@@ -71,7 +73,7 @@ func PrintMem() {
 		return
 	}
 
-	reservedBytes := installedKiB*1024 - uint64(info.physicalTotal)*uint64(info.pageSize)
+	reservedBytes := installedKiB*1024 - physicalTotalBytes
 
 	fmt.Printf("Hardware reserved: %.1f MiB\n", float64(reservedBytes)/(1<<20))
 }
