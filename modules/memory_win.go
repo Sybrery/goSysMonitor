@@ -7,36 +7,10 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-type performanceInformation struct {
-	cb                uint32
-	commitTotal       uintptr
-	commitLimit       uintptr
-	commitPeak        uintptr
-	physicalTotal     uintptr
-	physicalAvailable uintptr
-	systemCache       uintptr
-	kernelTotal       uintptr
-	kernelPaged       uintptr
-	kernelNonPaged    uintptr
-	pageSize          uintptr
-	handleCount       uint32
-	processCount      uint32
-	threadCount       uint32
-}
-
 func PrintMem() {
-	var info performanceInformation
-	info.cb = uint32(unsafe.Sizeof(info))
-
-	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
-	getPerformanceInfo := kernel32.NewProc("K32GetPerformanceInfo")
-
-	ok, _, callErr := getPerformanceInfo.Call(
-		uintptr(unsafe.Pointer(&info)),
-		uintptr(info.cb),
-	)
-	if ok == 0 {
-		fmt.Println("GetPerformanceInfo:", callErr)
+	info, err := ReadPerformanceInfo()
+	if err != nil {
+		fmt.Println("GetPerformanceInfo:", err)
 		return
 	}
 
@@ -65,9 +39,10 @@ func PrintMem() {
 	fmt.Printf("Paged pool: %.1f MiB | Non-paged pool: %.1f MiB\n", pagedPool, nonPagedPool)
 
 	var installedKiB uint64
+	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
 	getInstalledMemory := kernel32.NewProc("GetPhysicallyInstalledSystemMemory")
 
-	ok, _, callErr = getInstalledMemory.Call(uintptr(unsafe.Pointer(&installedKiB)))
+	ok, _, callErr := getInstalledMemory.Call(uintptr(unsafe.Pointer(&installedKiB)))
 	if ok == 0 {
 		fmt.Println("GetPhysicallyInstalledSystemMemory:", callErr)
 		return

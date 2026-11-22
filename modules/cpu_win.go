@@ -8,59 +8,70 @@ import (
 )
 
 func PrintCpu() {
-	c1, err := cpu.Percent(time.Second, false)
+	usages, err := cpu.Percent(time.Second, true)
+	if err != nil {
+		fmt.Println("CPU usage:", err)
+		return
+	}
+	if len(usages) == 0 {
+		fmt.Println("CPU usage unavailable")
+		return
+	}
+	var sum float64
+	for _, usage := range usages {
+		sum += usage
+	}
+
+	logicalProcessors, err := cpu.Counts(true)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
-	c2, err := cpu.Percent(time.Second, true)
+	physicalCores, err := cpu.Counts(false)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
-	lp, err := cpu.Counts(true)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	cp, err := cpu.Counts(false)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+
 	ci, err := cpu.Info()
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
-
 	if len(ci) == 0 {
 		return
 	}
-	if len(c1) == 0 {
-		return
-	}
 
-	physicalCores := fmt.Sprintf("Physical cores: %d", cp)
-	logicalProcessors := fmt.Sprintf("Logical processors: %d", lp)
-	sockets := fmt.Sprintf("Sockets: %d", len(ci))
-	maxMhz := fmt.Sprintf("Max frequency: %.0f MHz", ci[0].Mhz)
-	totalUsage := fmt.Sprintf("Total usage: %.1f%%", c1[0])
+	averageUsage := sum / float64(len(usages))
 
 	fmt.Println(ci[0].ModelName)
-	fmt.Println(physicalCores)
-	fmt.Println(logicalProcessors)
-	fmt.Println(sockets)
-	fmt.Println(maxMhz)
-	fmt.Println(totalUsage)
 
-	for i, usage := range c2 {
+	for i, usage := range usages {
 		bar, err := UsageBar(usage)
 		if err != nil {
 			fmt.Println("Error:", err)
 			return
 		}
-		fmt.Printf("CPU %d: [%s] %.1f%%\n", i+1, bar, usage)
+		fmt.Printf("CPU %2d: [%s] %5.1f%%", i+1, bar, usage)
+		if i%2 == 1 || i == len(usages)-1 {
+			fmt.Println()
+		} else {
+			fmt.Print("    ")
+		}
 	}
+	fmt.Println()
+	fmt.Printf("Utilization: %.1f%% | Speed:\n", averageUsage)
+
+	info, err := ReadPerformanceInfo()
+	if err != nil {
+		fmt.Println("GetPerformanceInfo:", err)
+		return
+	}
+	fmt.Printf("Processes: %d, Threads: %d, Handles: %d\n", info.processCount, info.threadCount, info.handleCount)
+
+	fmt.Printf("Max frequency: %.0f MHz\n", ci[0].Mhz)
+	fmt.Printf("Sockets: %d\n", len(ci))
+	fmt.Printf("Cores: %d\n", physicalCores)
+	fmt.Printf("Logical processors: %d\n", logicalProcessors)
 
 }
