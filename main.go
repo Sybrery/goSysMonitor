@@ -14,13 +14,18 @@ func PrintHelp() {
 	fmt.Println()
 	fmt.Println("The commands are:")
 	fmt.Println("                 gsm -c          show a cpu info")
+	fmt.Println("                 gsm -g          show a gpu info")
 	fmt.Println("                 gsm -m          show a ram info")
+	fmt.Println("                 gsm -d          show a disk info")
+	fmt.Println("                 gsm -p          show a processes info")
+	fmt.Println("                 gsm exit         quit")
 	fmt.Println()
 }
 
 func main() {
 	fmt.Println("Golang System Monitor [Version 0.1]")
 	fmt.Println("Author: Sybrery")
+	fmt.Println("Use \"gsm help\" if you need a hint")
 	fmt.Printf(">> ")
 
 	reader := bufio.NewScanner(os.Stdin)
