@@ -1,7 +1,6 @@
 package modules
 
 import (
-	"fmt"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -36,8 +35,7 @@ func ReadPerformanceInfo() (performanceInformation, error) {
 		uintptr(info.cb),
 	)
 	if ok == 0 {
-		fmt.Println("GetPerformanceInfo:", callErr)
-		return info, nil
+		return info, callErr
 	}
 	return info, nil
 }
