@@ -3,6 +3,7 @@ package modules
 import (
 	"fmt"
 
+	"github.com/shirou/gopsutil/v4/disk"
 	"golang.org/x/sys/windows"
 )
 
@@ -16,9 +17,23 @@ type diskInformation struct {
 	writeBytesPerSec float64
 }
 
-//func readDiskInfo(path string) (diskInformation, error) {
+func readDiskInfo(path string) (diskInformation, error) {
+	label, err := getVolumeLabel(path)
+	if err != nil {
+		fmt.Println("Volume label: ", err)
+		return diskInformation{}, err
+	}
+	usage, err := disk.Usage(path)
+	if err != nil {
+		fmt.Println("Disk usage:", err)
+		return diskInformation{}, err
+	}
 
-//}
+	return diskInformation{
+		label:         label,
+		capacityBytes: usage.Total,
+	}, nil
+}
 
 func getVolumeLabel(path string) (string, error) {
 	root, err := windows.UTF16PtrFromString(path)
