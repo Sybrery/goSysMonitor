@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"cmp"
 	"fmt"
 	"unsafe"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func PrintMem() {
-	info, err := ReadPerformanceInfo()
+	info, err := ReadMemoryPerformance()
 	if err != nil {
 		fmt.Println("GetPerformanceInfo:", err)
 		return
@@ -32,11 +33,15 @@ func PrintMem() {
 		return
 	}
 
+	hardware := readMemoryHardware()
+	fmt.Printf("Memory type: %s\n", cmp.Or(hardware.memoryType, "unavailable"))
 	fmt.Printf("In use: %.1f GiB [%s] (%.1f%%)\n", physicalUsed, bar, physicalUsedPercent)
 	fmt.Printf("Available: %.1f / %.1f GiB\n", physicalAvailable, physicalTotal)
 	fmt.Printf("Committed: %.1f / %.1f GiB\n", commitTotal, commitLimit)
 	fmt.Printf("Cached: %.1f GiB\n", systemCache)
 	fmt.Printf("Paged pool: %.1f MiB | Non-paged pool: %.1f MiB\n", pagedPool, nonPagedPool)
+	fmt.Printf("Speed: %s | Form factor: %s\n",
+		cmp.Or(hardware.speed, "unavailable"), cmp.Or(hardware.formFactor, "unavailable"))
 
 	var installedKiB uint64
 	kernel32 := windows.NewLazySystemDLL("kernel32.dll")

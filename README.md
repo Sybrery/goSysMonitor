@@ -7,7 +7,7 @@ A terminal-based system monitor for Windows, written in Go.
 - [x] CPU details and usage bars for each logical processor
 - [x] RAM usage, commit charge, system cache, kernel memory pools, and hardware-reserved RAM
 - [ ] GPU 0 and GPU 1 monitoring
-- [ ] Disk monitoring
+- [x] Disk monitoring
 - [ ] Running process list
 
 ## Run locally
@@ -23,10 +23,10 @@ Enter one of the following commands at the `>>` prompt. `Ctrl+C` or `gsm exit` t
 | Command    | What it shows |
 | ---------- | ------------- |
 | `gsm help` | Command list |
-| `gsm -c`   | CPU model, overall usage, usage per logical processor, physical cores, logical processor count, occupied sockets, and reported maximum frequency |
-| `gsm -m`   | RAM in use with a usage bar, available and total RAM, committed memory and its limit, Windows system cache, paged and non-paged pools, and hardware-reserved RAM |
+| `gsm -c`   | CPU model, overall usage, usage per logical processor, current speed, physical cores, logical processor count, occupied sockets, and reported reference frequency |
+| `gsm -m`   | Memory type, RAM usage and capacity, committed memory, system cache, kernel memory pools, speed, form factor, and hardware-reserved RAM |
 | `gsm -g`   | Placeholder for GPU monitoring |
-| `gsm -d`   | Placeholder for disk monitoring |
+| `gsm -d`   | Volume names and disk models, free and used space, active time, transfer rate, average response time, and read/write speeds |
 | `gsm -p`   | Placeholder for the process list |
 | `gsm exit` | Quit |
 
