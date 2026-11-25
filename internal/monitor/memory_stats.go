@@ -1,4 +1,4 @@
-package modules
+package monitor
 
 import (
 	"bytes"
@@ -28,7 +28,7 @@ type performanceInformation struct {
 	threadCount       uint32
 }
 
-func ReadMemoryPerformance() (performanceInformation, error) {
+func readMemoryPerformance() (performanceInformation, error) {
 	var info performanceInformation
 	info.cb = uint32(unsafe.Sizeof(info))
 
@@ -45,6 +45,16 @@ func ReadMemoryPerformance() (performanceInformation, error) {
 	return info, nil
 }
 
+func readInstalledMemory() (uint64, error) {
+	var installedKiB uint64
+	getInstalledMemory := windows.NewLazySystemDLL("kernel32.dll").NewProc("GetPhysicallyInstalledSystemMemory")
+	ok, _, err := getInstalledMemory.Call(uintptr(unsafe.Pointer(&installedKiB)))
+	if ok == 0 {
+		return 0, err
+	}
+	return installedKiB * 1024, nil
+}
+
 type memoryHardware struct {
 	memoryType string
 	speed      string
@@ -53,7 +63,7 @@ type memoryHardware struct {
 
 func readMemoryHardware() memoryHardware {
 	const (
-		rsmb       = 0x52534d42 // 'RSMB', the raw SMBIOS provider
+		rsmb       = 0x52534d42
 		headerSize = 8
 	)
 	firmware := windows.NewLazySystemDLL("kernel32.dll").NewProc("GetSystemFirmwareTable")
@@ -115,14 +125,12 @@ func parseMemoryHardware(table []byte) memoryHardware {
 		if kind == 127 || length < 4 || length > len(table) {
 			break
 		}
-		// Each formatted record is followed by strings ending in two NUL bytes.
 		end := bytes.Index(table[length:], []byte{0, 0})
 		if end < 0 {
 			break
 		}
 		record := table[:length]
 		table = table[length+end+2:]
-		// Type 17 describes a memory device. A zero size means an empty slot.
 		if kind != 17 || length < 0x13 || binary.LittleEndian.Uint16(record[0x0c:0x0e]) == 0 {
 			continue
 		}

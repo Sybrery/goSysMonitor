@@ -1,4 +1,4 @@
-package modules
+package monitor
 
 import (
 	"fmt"
@@ -11,10 +11,7 @@ func UsageBar(percent float64) (string, error) {
 		return "", fmt.Errorf("usage percent out of range: %g", percent)
 	}
 
-	filled := int(percent / 10)
-	unfilled := 10 - filled
-	bar := strings.Repeat("#", filled)
-	emptyPart := strings.Repeat(".", unfilled)
-
-	return bar + emptyPart, nil
+	const width = 10
+	filled := int(percent / (100 / width))
+	return strings.Repeat("#", filled) + strings.Repeat(".", width-filled), nil
 }

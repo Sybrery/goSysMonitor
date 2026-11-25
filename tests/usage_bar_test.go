@@ -1,9 +1,10 @@
-package test
+package tests
 
 import (
-	"golangSystemMonitor/modules"
 	"math"
 	"testing"
+
+	"golangSystemMonitor/internal/monitor"
 )
 
 func TestUsageBar(t *testing.T) {
@@ -45,7 +46,7 @@ func TestUsageBar(t *testing.T) {
 	}
 
 	for _, testCase := range testTable {
-		result, err := modules.UsageBar(testCase.percent)
+		result, err := monitor.UsageBar(testCase.percent)
 		gotErr := err != nil
 		if gotErr != testCase.wantErr {
 			t.Errorf("UsageBar(%g) error = %v, wantErr = %t", testCase.percent, err, testCase.wantErr)

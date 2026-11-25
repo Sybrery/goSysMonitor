@@ -1,11 +1,10 @@
-package modules
+package monitor
 
 import (
 	"encoding/binary"
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/shirou/gopsutil/v4/disk"
 	"golang.org/x/sys/windows"
@@ -87,7 +86,6 @@ func getVolumeDiskModels(path string) string {
 		extentsHeaderSize    = 8
 		extentSize           = 24
 	)
-	// DISK_EXTENT starts with the disk number, followed by two aligned int64s.
 	extents := make([]byte, extentsHeaderSize+extentSize)
 	var returned uint32
 	for {
@@ -135,7 +133,7 @@ func getPhysicalDiskModel(number uint32) string {
 	defer windows.CloseHandle(device)
 
 	const queryStorageProperty = 0x2d1400
-	var query [12]byte // StorageDeviceProperty and PropertyStandardQuery are both zero.
+	var query [12]byte
 	var header [8]byte
 	var returned uint32
 	if err := windows.DeviceIoControl(device, queryStorageProperty, &query[0], uint32(len(query)),
@@ -211,13 +209,8 @@ func readDiskPerformance(disks []diskInformation) error {
 		return nil
 	}
 
-	for sample := 0; sample < 2; sample++ {
-		if sample > 0 {
-			time.Sleep(time.Second)
-		}
-		if err := query.collect(); err != nil {
-			return err
-		}
+	if err := query.sample(); err != nil {
+		return err
 	}
 
 	for _, counter := range counters {
